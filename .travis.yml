@@ -3,8 +3,13 @@ crystal:
   - latest
 services:
   - docker
+install:
+  - shards install
+script:
+  - crystal spec
+  - bin/ameba
 before_deploy:
-  - mkdir bin
+  - mkdir -p bin
   - echo -e 'require "llvm/lib_llvm"\nrequire "llvm/enums"\n' >> src/cli.cr
   - docker run --rm -it -v $PWD:/freeport -w /freeport jrei/crystal-alpine crystal build src/cli.cr --static --release --no-debug --stats --progress -o bin/freeport
   - strip -s bin/freeport
